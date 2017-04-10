@@ -31,7 +31,7 @@ uint8 rx_buf[100];
 uint8 tx_buf[1000];
 
 extern short dft_output[3][512];
-extern tMEM16 uvwz_edge_phase_buf[4][30];
+extern tMEM16 uvwz_edge_phase_buf[5][30];
 
 uint8 validate_check_rx_data(uint8* rx_buf)
 {

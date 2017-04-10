@@ -84,7 +84,7 @@ extern u16 adc_tmp[6][257];
 uint32 data_buf[TEST_CHANNEL_MAX][30];
 volatile uint32 A_buf[2100];
 volatile uint32 B_buf[2100];
-tMEM16 uvwz_edge_phase_buf[4][30];
+tMEM16 uvwz_edge_phase_buf[5][30];
 
 void calc_cpld_data(uint32 data, uint16 ch_num)
 {

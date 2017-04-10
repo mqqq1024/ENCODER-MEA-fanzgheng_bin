@@ -53,7 +53,7 @@ void iwdg_init(void);
 
 int main(void)
 {
-		NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x4000);
+		//NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x4000);
     /*!< At this stage the microcontroller clock setting is already configured, 
        this is done through SystemInit() function which is called from startup
        file (startup_stm32f10x_xx.s) before to branch to application main.
