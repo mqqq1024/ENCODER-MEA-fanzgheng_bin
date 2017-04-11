@@ -102,7 +102,7 @@ void get_edge_num_per_channel(void)
 	sys_para.ch_num = ch_num;
 	
 	if(ch_num<=1 || ch_num>=(TEST_CHANNEL_MAX+1))
-		return;
+		return;//like to £¨exit sub£©
 	
 	GPIO_ResetBits(GPIOE, GPIO_Pin_15);
 	GPIO_ResetBits(GPIOE, GPIO_Pin_9);

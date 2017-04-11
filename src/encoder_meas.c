@@ -112,51 +112,51 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 		if(channel_data[ch_num].edge_cnt_readout == 1)
 		{
 			tmp0 = data;
-			if((tmp0&0x80000000)==0 && (tmp0&0x7fffffff)!=1)
+			if((tmp0 & 0x80000000) == 0 && (tmp0 & 0x7fffffff) != 1)
 			{
-				channel_data[ch_num].z_phase_diff.uint32 = tmp0&0x7fffffff;
+				channel_data[ch_num].z_phase_diff.uint32 = tmp0 & 0x7fffffff;
 			}
 		}
 		else if(channel_data[ch_num].edge_cnt_readout == 2)
 		{
 			tmp1 = data;
-			if((tmp1&0x80000000)==0)
+			if((tmp1 & 0x80000000) == 0)
 			{
-				channel_data[ch_num].z_phase_diff.uint32 = tmp1&0x7fffffff;
+				channel_data[ch_num].z_phase_diff.uint32 = tmp1 & 0x7fffffff;
 			}
 		}
 		else if(channel_data[ch_num].edge_cnt_readout == 3)
 		{
 			tmp2 = data;
-			if((tmp2&0x80000000)==0 && (tmp0&0x7fffffff)==1)
+			if((tmp2 & 0x80000000)==0 && (tmp0 & 0x7fffffff)==1)
 			{
-				channel_data[ch_num].z_phase_diff.uint32 = tmp2&0x7fffffff;
+				channel_data[ch_num].z_phase_diff.uint32 = tmp2 & 0x7fffffff;
 			}
 		}
-		else if((channel_data[ch_num].edge_cnt_readout %2 == 0)&&(channel_data[ch_num].edge_cnt_readout >= 4))
+		else if((channel_data[ch_num].edge_cnt_readout % 2 == 0) && (channel_data[ch_num].edge_cnt_readout >= 4))
 		{
 			tmp3 = data;
 			period = tmp3 - tmp1;					
 			frep = (uint32)((double)(40*1000000*1.0 / period)*100); //0.01hz
 			if(tmp3 & 0x80000000)
 			{
-				duty = (u16)(((double)(((tmp3&0x7fffffff) - tmp2)*1.0)/(double)period*1.0)*10000);//0.01%
+				duty = (u16)(((double)(((tmp3 & 0x7fffffff) - tmp2) * 1.0)/(double)period * 1.0) * 10000);//0.01%
 				phase_diff = (tmp3&0x7fffffff) - tmp2;		
 			}
 			else
 			{
-				duty = (u16)(((double)(((tmp2&0x7fffffff) - tmp1)*1.0)/(double)period*1.0)*10000);//0.01%
-				phase_diff = (tmp2&0x7fffffff) - tmp1;
+				duty = (u16)(((double)(((tmp2 & 0x7fffffff) - tmp1) * 1.0)/(double)period * 1.0) *10000);//0.01%
+				phase_diff = (tmp2 & 0x7fffffff) - tmp1;
 			}
 
 			if(period > channel_data[ch_num].period_max.uint32)
-				channel_data[ch_num].period_max.uint32 = period;
+				channel_data[ch_num].period_max.uint32 = period; // period = tmp3 - tmp1;	周波比大小周期计算
 			if(period < channel_data[ch_num].period_min.uint32)
 				channel_data[ch_num].period_min.uint32 = period;				
 			channel_data[ch_num].period_sum = channel_data[ch_num].period_sum  + period;			
 
 			if(frep > channel_data[ch_num].frep_max.uint32)
-				channel_data[ch_num].frep_max.uint32 = frep;
+				channel_data[ch_num].frep_max.uint32 = frep; 
 			if(frep < channel_data[ch_num].frep_min.uint32)
 				channel_data[ch_num].frep_min.uint32 = frep;				
 			channel_data[ch_num].frep_sum = channel_data[ch_num].frep_sum  + frep;
@@ -168,19 +168,19 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 			channel_data[ch_num].duty_sum = channel_data[ch_num].duty_sum + duty;
 			
 			if(phase_diff > channel_data[ch_num].phase_diff_max.uint32)
-				channel_data[ch_num].phase_diff_max.uint32 = phase_diff;
+				channel_data[ch_num].phase_diff_max.uint32 = phase_diff; // ？
 			if(phase_diff < channel_data[ch_num].phase_diff_min.uint32)
 				channel_data[ch_num].phase_diff_min.uint32 = phase_diff;				
 			channel_data[ch_num].phase_diff_sum = channel_data[ch_num].phase_diff_sum + phase_diff;
 
-			channel_data[ch_num].calculated_period_num++;	
+			channel_data[ch_num].calculated_period_num++;	//mean 平均数
 			channel_data[ch_num].period_mean.uint32 = (uint32)(channel_data[ch_num].period_sum / channel_data[ch_num].calculated_period_num);
 			channel_data[ch_num].duty_mean.uint16 = (uint16)(channel_data[ch_num].duty_sum / channel_data[ch_num].calculated_period_num);
 			channel_data[ch_num].frep_mean.uint32 = (uint32)(channel_data[ch_num].frep_sum / channel_data[ch_num].calculated_period_num);
 			channel_data[ch_num].phase_diff_mean.uint32 = (uint32)(channel_data[ch_num].phase_diff_sum / channel_data[ch_num].calculated_period_num);	
 	
 		}
-		else if((channel_data[ch_num].edge_cnt_readout%2 == 1)&&(channel_data[ch_num].edge_cnt_readout>=4))
+		else if((channel_data[ch_num].edge_cnt_readout % 2 == 1) && (channel_data[ch_num].edge_cnt_readout >= 4))
 		{
 			tmp1 = tmp3;
 			tmp2 = data;	
@@ -253,14 +253,14 @@ void reset_channel_data( void )
 	
 	for(i=0;i<TEST_CHANNEL_MAX;i++)
 	{
-		channel_data[i].vol_rms.uint16 = 0;
+		channel_data[i].vol_rms.uint16 = 0;//rms 均方根
 		channel_data[i].vol_high_max.uint16 = 0;
 		channel_data[i].vol_high_min.uint16 = 0;
 		channel_data[i].vol_high_mean.uint16 = 0;
 		channel_data[i].vol_low_max.uint16 = 0;
 		channel_data[i].vol_low_min.uint16 = 0;
 		channel_data[i].vol_low_mean.uint16 = 0;
-		channel_data[i].pulse_cnt.uint16 = 0;
+		channel_data[i].pulse_cnt.uint16 = 0;//pulse脉冲
 		channel_data[i].edge_cnt_readout = 0;	
 		channel_data[i].edge_num_per_cycle.uint16 = 0;	
 		channel_data[i].clk_num_per_cycle.uint32 = 0;	
@@ -481,9 +481,10 @@ void calc_uvw_edge_phase(void)
 		channel_data[8].edge_num_per_cycle.uint16=1;
 	}
 	// qj Z边沿计算
-	if((data_buf[13][0]&0x7fffffff) <= 0x0F)
+	if((data_buf[13][0] & 0x7fffffff) <= 0x0F)
 	{
 		channel_data[13].edge_num_per_cycle.uint16--;
+		channel_data[13].edge_num_per_cycle.uint16 = channel_data[13].edge_num_per_cycle.uint16 / 2;
 	}
 }
 
@@ -505,9 +506,9 @@ static portTASK_FUNCTION( cpld_test_task, pvParameters )
 				{
 					sys_para.status.bits.sample_en = 0;
 					cpld_data_process();
- 					calc_uvw_vol_rms();	
+ 					calc_uvw_vol_rms();	//计算方差 
 //					calc_dft();
-					calc_uvw_edge_phase();	
+					calc_uvw_edge_phase();	//计算 边沿数和相位角
 					sys_para.status.bits.sys_state = STATE_TEST_OVER;
 					break;
 				}
