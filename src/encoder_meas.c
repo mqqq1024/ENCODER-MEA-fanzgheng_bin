@@ -128,7 +128,7 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 		else if(channel_data[ch_num].edge_cnt_readout == 3)
 		{
 			tmp2 = data;
-			if((tmp2 & 0x80000000)==0 && (tmp0 & 0x7fffffff)==1)
+			if((tmp2 & 0x80000000)==0 && (tmp0 & 0x7fffffff) == 1)
 			{
 				channel_data[ch_num].z_phase_diff.uint32 = tmp2 & 0x7fffffff;
 			}
@@ -137,16 +137,16 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 		{
 			tmp3 = data;
 			period = tmp3 - tmp1;					
-			frep = (uint32)((double)(40*1000000*1.0 / period)*100); //0.01hz
+			frep = (uint32)((double)(40 * 1000000 * 1.0 / period) * 100); //0.01hz
 			if(tmp3 & 0x80000000)
 			{
 				duty = (u16)(((double)(((tmp3 & 0x7fffffff) - tmp2) * 1.0)/(double)period * 1.0) * 10000);//0.01%
-				phase_diff = (tmp3&0x7fffffff) - tmp2;		
+				phase_diff = (tmp3 & 0x7fffffff) - tmp2;		
 			}
 			else
 			{
 				duty = (u16)(((double)(((tmp2 & 0x7fffffff) - tmp1) * 1.0)/(double)period * 1.0) *10000);//0.01%
-				phase_diff = (tmp2 & 0x7fffffff) - tmp1;
+				phase_diff = (tmp2 & 0x7fffffff) - tmp1;//phase_diff？？
 			}
 
 			if(period > channel_data[ch_num].period_max.uint32)
@@ -191,7 +191,7 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 void cpld_data_process( void )
 {
 	uint16 ch_num;
-	uint32 i, j, addr_cnt=0;	
+	uint32 i, j, addr_cnt=0;	//addr_cnt 字节计数变量
 	union u32_bytes cpld_data;
 
 	for(i=0;i<0x20000;i++)
@@ -199,29 +199,30 @@ void cpld_data_process( void )
 		for(j=0;j<4;j++)
 		{
 			MCU_RD_CLK_L;
-			cpld_data._byte[j] = GPIO_ReadInputData(GPIOE)&0x00ff;
+			cpld_data._byte[j] = GPIO_ReadInputData(GPIOE) & 0x00ff;
 			MCU_RD_CLK_H;	
 			addr_cnt++;		
 		}	
 
-		for(ch_num=0;ch_num<TEST_CHANNEL_MAX;ch_num++)//check which channel the current data belongs to
+		for(ch_num = 0; ch_num < TEST_CHANNEL_MAX; ch_num++)//check which channel the current data belongs to
 		{
-			if((addr_cnt-4)>=ch_base_addr[ch_num] && (addr_cnt-4)<(ch_base_addr[ch_num]+channel_data[ch_num].edge_num_per_cycle.uint16*4))
+			if((addr_cnt - 4) >= ch_base_addr[ch_num] 
+				&& (addr_cnt - 4) < (ch_base_addr[ch_num ] + channel_data[ch_num].edge_num_per_cycle.uint16 * 4))//基地址 + 偏移地址数
 			{
 				channel_data[ch_num].edge_cnt_readout++;
 				calc_cpld_data(cpld_data._u32, ch_num);
 				
 				if(channel_data[ch_num].edge_cnt_readout < 30)
 				{
-					data_buf[ch_num][channel_data[ch_num].edge_cnt_readout-1] = cpld_data._u32;
+					data_buf[ch_num][channel_data[ch_num].edge_cnt_readout - 1] = cpld_data._u32;
 				}
-				if(ch_num==9)
+				if(ch_num == 9)
 				{
-					A_buf[channel_data[ch_num].edge_cnt_readout-1] = cpld_data._u32;
+					A_buf[channel_data[ch_num].edge_cnt_readout - 1] = cpld_data._u32;
 				}
-				if(ch_num==11)
+				if(ch_num == 11)
 				{
-					B_buf[channel_data[ch_num].edge_cnt_readout-1] = cpld_data._u32;
+					B_buf[channel_data[ch_num].edge_cnt_readout - 1] = cpld_data._u32;
 				}
 				break;
 			}				
@@ -251,7 +252,7 @@ void reset_channel_data( void )
 	memset((void *)data_buf, 0, sizeof(data_buf));
 	memset((void *)uvwz_edge_phase_buf, 0, sizeof(uvwz_edge_phase_buf));
 	
-	for(i=0;i<TEST_CHANNEL_MAX;i++)
+	for(i = 0; i < TEST_CHANNEL_MAX; i++)
 	{
 		channel_data[i].vol_rms.uint16 = 0;//rms 均方根
 		channel_data[i].vol_high_max.uint16 = 0;
@@ -483,7 +484,7 @@ void calc_uvw_edge_phase(void)
 	// qj Z边沿计算
 	if((data_buf[13][0] & 0x7fffffff) <= 0x0F)
 	{
-		channel_data[13].edge_num_per_cycle.uint16--;
+		channel_data[13].edge_num_per_cycle.uint16 --;
 		channel_data[13].edge_num_per_cycle.uint16 = channel_data[13].edge_num_per_cycle.uint16 / 2;
 	}
 }
@@ -506,7 +507,7 @@ static portTASK_FUNCTION( cpld_test_task, pvParameters )
 				{
 					sys_para.status.bits.sample_en = 0;
 					cpld_data_process();
- 					calc_uvw_vol_rms();	//计算方差 
+ 					calc_uvw_vol_rms();	//计算方差 判断缺相？
 //					calc_dft();
 					calc_uvw_edge_phase();	//计算 边沿数和相位角
 					sys_para.status.bits.sys_state = STATE_TEST_OVER;
