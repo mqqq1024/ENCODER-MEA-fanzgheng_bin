@@ -109,6 +109,8 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 // 	}
 // 	else
 // 	{
+	
+		
 		if(channel_data[ch_num].edge_cnt_readout == 1)
 		{
 			tmp0 = data;
@@ -130,6 +132,11 @@ void calc_cpld_data(uint32 data, uint16 ch_num)
 			tmp2 = data;
 			if((tmp2 & 0x80000000)==0 && (tmp0 & 0x7fffffff) == 1)
 			{
+				if(((tmp2 & 0x7fffffff) - (tmp1 & 0x7fffffff)) <= 0x7fff)//针对U反电势限定其边沿的计数值的阈值 0xffff qj
+				{
+					channel_data[ch_num].edge_cnt_readout--;
+					return;
+				}
 				channel_data[ch_num].z_phase_diff.uint32 = tmp2 & 0x7fffffff;
 			}
 		}
