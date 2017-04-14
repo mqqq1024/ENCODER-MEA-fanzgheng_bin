@@ -205,10 +205,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>5</ColumnNumber>
+      <ColumnNumber>38</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>55</TopLine>
-      <CurrentLine>70</CurrentLine>
+      <TopLine>46</TopLine>
+      <CurrentLine>64</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>../src/main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -285,9 +285,9 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>66</ColumnNumber>
+      <ColumnNumber>76</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>267</TopLine>
+      <TopLine>274</TopLine>
       <CurrentLine>275</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>../src/uart_com.c</PathWithFileName>
@@ -317,10 +317,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>50</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>118</TopLine>
-      <CurrentLine>137</CurrentLine>
+      <TopLine>128</TopLine>
+      <CurrentLine>143</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>../src/encoder_meas.c</PathWithFileName>
       <FilenameWithoutPath>encoder_meas.c</FilenameWithoutPath>
